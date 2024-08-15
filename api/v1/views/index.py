@@ -17,6 +17,6 @@ def stats():
     """Return status of the API"""
     from models.engine.db_storage import classes
     dic = {}
-    for key, value in classes.items():
-        dic[key] = storage.count(value)
+    for key in classes.keys():
+        dic[key] = storage.count(key)
     return jsonify(dic)
