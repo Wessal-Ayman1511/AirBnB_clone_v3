@@ -18,6 +18,7 @@ def teardown(exception):
     """Close storage on teardown"""
     storage.close()
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     """ handles 404 errors """
