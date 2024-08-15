@@ -6,9 +6,10 @@ from api.v1.views import app_views
 from models import storage
 
 
+classes = {"users": "User", "places": "Place", "states": "State",
+           "cities": "City", "amenities": "Amenity",
+           "reviews": "Review"}
 
-classes = {"Amenity": "Amenity", "City": "City",
-           "Place": "Place", "Review": "Review", "State": "State", "User": "User"}
 
 @app_views.route('/status', methods=['GET'])
 def status():
