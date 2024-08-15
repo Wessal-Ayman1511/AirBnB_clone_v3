@@ -43,22 +43,16 @@ def delete_state(state_id):
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
 def state_post():
     """ Handles POST method for creating a State object """
-    
     if not request.is_json:
         abort(400, description="Not a JSON")
-    
     data = request.get_json()
-    
     if not isinstance(data, dict):
         abort(400, description="Not a JSON")
-    
     if 'name' not in data:
         abort(400, description="Missing name")
-    
     state = State(**data)
     storage.new(state)
     storage.save()
-    
     return jsonify(state.to_dict()), 201
 
 
