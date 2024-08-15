@@ -19,4 +19,4 @@ def stats():
     dic = {}
     for key, value in classes.items():
         dic[key] = storage.count(value)
-    return dic
+    return jsonify(dic)
