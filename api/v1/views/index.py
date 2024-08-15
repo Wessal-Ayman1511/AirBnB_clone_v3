@@ -15,4 +15,8 @@ def status():
 @app_views.route('stats', methods=['GET'])
 def stats():
     """Return status of the API"""
-    return jsonify(storage.count())
+    from models.engine.db_storage import classes
+    dic = {}
+    for key, value in classes.items():
+        dic[key] = storage.count(value)
+    return jsonify(dic)
