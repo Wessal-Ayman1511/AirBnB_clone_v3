@@ -39,37 +39,19 @@ def delete_amenity(amenity_id):
     return jsonify({}), 200
 
 
-# @app_views.route('/amenities/', methods=['POST'])
-# def create_amenity():
-#     '''Creates an Amenity'''
-#     if not request.get_json():
-#         abort(400, 'Not a JSON')
-#     if 'name' not in request.get_json():
-#         abort(400, 'Missing name')
-#     amenities = []
-#     new_amenity = Amenity(name=request.json['name'])
-#     storage.new(new_amenity)
-#     storage.save()
-#     amenities.append(new_amenity.to_dict())
-#     return jsonify(amenities[0]), 201
-@app_views.route('/amenities', methods=['POST'])
+@app_views.route('/amenities/', methods=['POST'])
 def create_amenity():
     '''Creates an Amenity'''
-    data = request.get_json()
-
-    # Check if the request is JSON and if 'name' is provided
-    if not data:
+    if not request.get_json():
         abort(400, 'Not a JSON')
-    if 'name' not in data:
+    if 'name' not in request.get_json():
         abort(400, 'Missing name')
-
-    # Create the new Amenity
-    new_amenity = Amenity(name=data['name'])
+    amenities = []
+    new_amenity = Amenity(name=request.json['name'])
     storage.new(new_amenity)
     storage.save()
-
-    # Return the new Amenity with status code 201
-    return jsonify(new_amenity.to_dict()), 201
+    amenities.append(new_amenity.to_dict())
+    return jsonify(amenities[0]), 201
 
 
 @app_views.route('/amenities/<amenity_id>', methods=['PUT'])
