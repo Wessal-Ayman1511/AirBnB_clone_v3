@@ -20,7 +20,7 @@ def reviews_all(place_id):
     reviews = storage.all("Review").values()
     for review in reviews:
         if review.place_id == place_id:
-            reviews_all.append(review.to_json())
+            reviews_all.append(review.to_dict())
     return jsonify(reviews_all)
 
 
