@@ -49,23 +49,18 @@ def create_city(state_id):
     # Check if the Content-Type is application/json
     if not request.is_json:
         abort(400, 'Not a JSON')
-    # Get the JSON request body
     data = request.get_json(silent=True)
     if data is None:
         abort(400, 'Not a JSON')
     if 'name' not in data:
         abort(400, 'Missing name')
-    # Retrieve the State object directly
     state_obj = storage.get("State", state_id)
     if state_obj is None:
         abort(404)
-    # Create the new City
     new_city = City(name=data['name'], state_id=state_id)
     storage.new(new_city)
     storage.save()
-    # Return the newly created City
     return jsonify(new_city.to_dict()), 201
-
 
 
 @app_views.route("/cities/<city_id>", methods=['PUT'])
