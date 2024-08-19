@@ -45,25 +45,32 @@ def delete_place(place_id):
 def create_place(city_id):
     '''Creates a Place'''
     data = request.get_json(silent=True)
-    # Check if the request is JSON and validate required fields
+    
+    # Check if the request is JSON
     if data is None:
         abort(400, 'Not a JSON')
+
+    # Validate required fields
     if 'user_id' not in data:
         abort(400, 'Missing user_id')
     if 'name' not in data:
         abort(400, 'Missing name')
+
     # Verify city exists
     city = storage.get(City, city_id)
     if not city:
         abort(404)
+    
     # Verify user exists
     user = storage.get(User, data['user_id'])
     if not user:
         abort(404)
+    
     # Create the new Place
     new_place = Place(name=data['name'], user_id=data['user_id'], city_id=city_id)
     storage.new(new_place)
     storage.save()
+    
     return jsonify(new_place.to_dict()), 201
 
 
