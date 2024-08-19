@@ -61,52 +61,23 @@ def place_post(city_id):
     place = Place(**data)
     place.city_id = city_id
     place.save()
-    place = place.to_json()
+    place = place.to_dict()
     return jsonify(place), 201
 
 
 @app_views.route('/places/<place_id>', methods=['PUT'])
-def updates_place(place_id):
-    '''Updates a Place object'''
-    all_places = storage.all("Place").values()
-    place_obj = [obj.to_dict() for obj in all_places if obj.id == place_id]
-    if place_obj == []:
+def place_put(place_id):
+    """ handles PUT method """
+    place = storage.get("Place", place_id)
+    if place is None:
         abort(404)
-    if not request.get_json():
-        abort(400, 'Not a JSON')
-    if 'name' in request.get_json():
-        place_obj[0]['name'] = request.json['name']
-    if 'description' in request.get_json():
-        place_obj[0]['description'] = request.json['description']
-    if 'number_rooms' in request.get_json():
-        place_obj[0]['number_rooms'] = request.json['number_rooms']
-    if 'number_bathrooms' in request.get_json():
-        place_obj[0]['number_bathrooms'] = request.json['number_bathrooms']
-    if 'max_guest' in request.get_json():
-        place_obj[0]['max_guest'] = request.json['max_guest']
-    if 'price_by_night' in request.get_json():
-        place_obj[0]['price_by_night'] = request.json['price_by_night']
-    if 'latitude' in request.get_json():
-        place_obj[0]['latitude'] = request.json['latitude']
-    if 'longitude' in request.get_json():
-        place_obj[0]['longitude'] = request.json['longitude']
-    for obj in all_places:
-        if obj.id == place_id:
-            if 'name' in request.get_json():
-                obj.name = request.json['name']
-            if 'description' in request.get_json():
-                obj.description = request.json['description']
-            if 'number_rooms' in request.get_json():
-                obj.number_rooms = request.json['number_rooms']
-            if 'number_bathrooms' in request.get_json():
-                obj.number_bathrooms = request.json['number_bathrooms']
-            if 'max_guest' in request.get_json():
-                obj.max_guest = request.json['max_guest']
-            if 'price_by_night' in request.get_json():
-                obj.price_by_night = request.json['price_by_night']
-            if 'latitude' in request.get_json():
-                obj.latitude = request.json['latitude']
-            if 'longitude' in request.get_json():
-                obj.longitude = request.json['longitude']
-    storage.save()
-    return jsonify(place_obj[0]), 200
+    data = request.get_json()
+    if data is None:
+        abort(400, "Not a JSON")
+    for key, value in data.items():
+        ignore_keys = ["id", "user_id", "city_id", "created_at", "updated_at"]
+        if key not in ignore_keys:
+            place.bm_update(key, value)
+    place.save()
+    place = place.to_json()
+    return jsonify(place), 200
