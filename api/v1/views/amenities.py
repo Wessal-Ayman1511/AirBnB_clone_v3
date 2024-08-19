@@ -20,7 +20,7 @@ def get_amenities():
 
 
 @app_views.route('/amenities/<amenity_id>', methods=['GET'])
-def get_amenity(amenity_id):
+def get_amenity_byID(amenity_id):
     """Retrieve a specific Amenity object"""
     amenity = storage.get(Amenity, amenity_id)
     if amenity is None:
@@ -45,6 +45,8 @@ def create_amenity():
     if not request.is_json:
         abort(400, 'Not a JSON')
     data = request.get_json()
+    if not data:
+        abort(400, 'Not a JSON')
     if 'name' not in data:
         abort(400, 'Missing name')
     new_amenity = Amenity(name=data['name'])
