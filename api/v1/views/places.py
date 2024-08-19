@@ -44,29 +44,28 @@ def delete_place(place_id):
 @app_views.route('/cities/<city_id>/places', methods=['POST'])
 def create_place(city_id):
     '''Creates a Place'''
-    if not request.get_json(silent=True):
+    data = request.get_json(silent=True)
+    # Check if the request is JSON and validate required fields
+    if data is None:
         abort(400, 'Not a JSON')
-    if 'user_id' not in request.get_json(silent=True):
+    if 'user_id' not in data:
         abort(400, 'Missing user_id')
-    if 'name' not in request.get_json(silent=True):
+    if 'name' not in data:
         abort(400, 'Missing name')
-    all_cities = storage.all("City").values()
-    city_obj = [obj.to_dict() for obj in all_cities
-                if obj.id == city_id]
-    if city_obj == []:
+    # Verify city exists
+    city = storage.get(City, city_id)
+    if not city:
         abort(404)
-    places = []
-    new_place = Place(name=request.json['name'],
-                      user_id=request.json['user_id'], city_id=city_id)
-    all_users = storage.all("User").values()
-    user_obj = [obj.to_dict() for obj in all_users
-                if obj.id == new_place.user_id]
-    if user_obj == []:
+    # Verify user exists
+    user = storage.get(User, data['user_id'])
+    if not user:
         abort(404)
+    # Create the new Place
+    new_place = Place(name=data['name'], user_id=data['user_id'], city_id=city_id)
     storage.new(new_place)
     storage.save()
-    places.append(new_place.to_dict())
-    return jsonify(places[0]), 201
+    return jsonify(new_place.to_dict()), 201
+
 
 
 @app_views.route('/places/<place_id>', methods=['PUT'])
