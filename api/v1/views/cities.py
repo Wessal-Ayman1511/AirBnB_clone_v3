@@ -49,7 +49,9 @@ def create_city(state_id):
         abort(400, 'Not a JSON')
     if 'name' not in request.get_json():
         abort(400, 'Missing name')
-    if storage.get(State, state_id):
+    all_states = storage.all("State").values()
+    state_obj = [obj.to_dict() for obj in all_states if obj.id == state_id]
+    if state_obj == []:
         abort(404)
     cities = []
     new_city = City(name=request.json['name'], state_id=state_id)
