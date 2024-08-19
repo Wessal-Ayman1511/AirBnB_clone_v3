@@ -42,29 +42,23 @@ def city_delete(city_id):
     return jsonify({}), 200
 
 
-@app_views.route("/states/<state_id>/cities", methods=['POST'])
-def city_create(state_id):
-    # Check if the state_id is linked to a State object
-    state = storage.get(State, state_id)
-    if state is None:  # Ensure that the state exists
-        abort(404, description="State not found")
-    # Validate that the request is a valid JSON
-    if not request.is_json:
-        abort(400, description="Not a JSON")
-    data = request.get_json()
-    # Validate that the data is a dictionary
-    if not isinstance(data, dict):
-        abort(400, description="Not a JSON")
-    # Check if the 'name' key is present in the data
-    if 'name' not in data or not data['name']:
-        abort(400, description="Missing name")
-    # Create the new City object
-    data['state_id'] = state_id
-    new_city = City(**data)
+@app_views.route('/states/<state_id>/cities/', methods=['POST'])
+def create_city(state_id):
+    '''Creates a City'''
+    if not request.get_json():
+        abort(400, 'Not a JSON')
+    if 'name' not in request.get_json():
+        abort(400, 'Missing name')
+    all_states = storage.all("State").values()
+    state_obj = [obj.to_dict() for obj in all_states if obj.id == state_id]
+    if state_obj == []:
+        abort(404)
+    cities = []
+    new_city = City(name=request.json['name'], state_id=state_id)
     storage.new(new_city)
     storage.save()
-    # Return the new City with a 201 status code
-    return jsonify(new_city.to_dict()), 201
+    cities.append(new_city.to_dict())
+    return jsonify(cities[0]), 201
 
 
 @app_views.route("/cities/<city_id>", methods=['PUT'])
