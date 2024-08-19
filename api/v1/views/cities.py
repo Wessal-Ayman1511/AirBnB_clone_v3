@@ -44,19 +44,27 @@ def city_delete(city_id):
 
 @app_views.route("/states/<state_id>/cities", methods=['POST'])
 def city_create(state_id):
+    # Check if the state_id is linked to a State object
+    state = storage.get(State, state_id)
+    if state is None:  # Ensure that the state exists
+        abort(404, description="State not found")
+    # Validate that the request is a valid JSON
     if not request.is_json:
         abort(400, description="Not a JSON")
     data = request.get_json()
+    # Validate that the data is a dictionary
     if not isinstance(data, dict):
         abort(400, description="Not a JSON")
-    if not data.get('name'):
+    # Check if the 'name' key is present in the data
+    if 'name' not in data or not data['name']:
         abort(400, description="Missing name")
+    # Create the new City object
     data['state_id'] = state_id
     new_city = City(**data)
     storage.new(new_city)
     storage.save()
+    # Return the new City with a 201 status code
     return jsonify(new_city.to_dict()), 201
-
 
 
 @app_views.route("/cities/<city_id>", methods=['PUT'])
