@@ -51,8 +51,8 @@ def city_create(state_id):
         abort(400, description="Not a JSON")
     if not data['name']:
         abort(400, description="Missing name")
-    data['state_id'] = state_id
-    new_city = City(**data)
+    #data['state_id'] = state_id
+    new_city = City(name=request.json['name'], state_id=state_id)
     storage.new(new_city)
     storage.save()
     return jsonify(new_city.to_dict()), 201
