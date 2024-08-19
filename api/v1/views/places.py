@@ -79,5 +79,5 @@ def place_put(place_id):
         if key not in ignore_keys:
             place.bm_update(key, value)
     place.save()
-    place = place.to_json()
+    place = place.to_dict()
     return jsonify(place), 200
