@@ -42,7 +42,7 @@ def city_delete(city_id):
     return jsonify({}), 200
 
 
-@app_views.route("states/<state_id>/cities", methods=['POST'])
+@app_views.route("/states/<state_id>/cities", methods=['POST'])
 def city_create(state_id):
     if not request.is_json:
         abort(400, description="Not a JSON")
@@ -56,6 +56,7 @@ def city_create(state_id):
     storage.new(new_city)
     storage.save()
     return jsonify(new_city.to_dict()), 201
+
 
 
 @app_views.route("/cities/<city_id>", methods=['PUT'])
