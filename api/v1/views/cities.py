@@ -53,12 +53,10 @@ def create_city(state_id):
     state_obj = [obj.to_dict() for obj in all_states if obj.id == state_id]
     if state_obj == []:
         abort(404)
-    cities = []
     new_city = City(name=request.json['name'], state_id=state_id)
     storage.new(new_city)
     storage.save()
-    cities.append(new_city.to_dict())
-    return jsonify(cities[0]), 201
+    return jsonify(new_city.to_dict()), 201
 
 
 @app_views.route("/cities/<city_id>", methods=['PUT'])
