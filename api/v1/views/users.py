@@ -19,8 +19,8 @@ def get_users():
     return jsonify(amenities)
 
 
-@app_views.route('users/<user_id>', methods=['GET'])
-def get_amenity_byID(user_id):
+@app_views.route('/users/<user_id>', methods=['GET'])
+def get_user_byID(user_id):
     """Retrieve a specific User object"""
     user = storage.get(User, user_id)
     if user is None:
@@ -30,7 +30,7 @@ def get_amenity_byID(user_id):
 
 @app_views.route('/users/<user_id>', methods=['DELETE'])
 def delete_user(user_id):
-    """Delete a specific Amenity object"""
+    """Delete a specific user object"""
     user = storage.get(User, user_id)
     if user is None:
         abort(404)
@@ -40,8 +40,8 @@ def delete_user(user_id):
 
 
 @app_views.route('/users/', methods=['POST'])
-def create_amenity():
-    '''Creates an Amenity'''
+def create_user():
+    '''Creates an User'''
     if not request.get_json(silent=True):
         abort(400, 'Not a JSON')
     if 'email' not in request.get_json(silent=True):
